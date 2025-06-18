@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "@/lib/api";
 import { Room, RoomEvent } from "livekit-client";
 import { VoiceRoomModal } from "@/components/VoiceRoomModal";
@@ -51,8 +51,28 @@ export default function ConversationPage({ params }: { params: PageParams }) {
   const [room] = useState(new Room());
   const [isVoiceRoomOpen, setVoiceRoomOpen] = useState(false);
   const [loadingVoice, setLoadingVoice] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const router = useRouter();
   const { t } = useTranslation();
+
+  const fetchMessages = useCallback(async () => {
+    if (params.conversationId && params.conversationId !== 'new') {
+      setLoadingMessages(true);
+      try {
+        const response = await api.get(
+          `/conversations/${params.conversationId}/messages`
+        );
+        setMessages(response.data);
+      } catch (error) {
+        console.error("Failed to fetch messages", error);
+      } finally {
+        setLoadingMessages(false);
+      }
+    } else {
+      setLoadingMessages(false);
+      setMessages([]);
+    }
+  }, [params.conversationId]);
 
   useEffect(() => {
     const fetchConversation = async () => {
@@ -68,38 +88,28 @@ export default function ConversationPage({ params }: { params: PageParams }) {
       }
     };
 
-    const fetchMessages = async () => {
-      if (params.conversationId && params.conversationId !== 'new') {
-        setLoadingMessages(true);
-        try {
-          const response = await api.get(
-            `/conversations/${params.conversationId}/messages`
-          );
-          setMessages(response.data);
-        } catch (error) {
-          console.error("Failed to fetch messages", error);
-        } finally {
-          setLoadingMessages(false);
-        }
-      } else {
-        setLoadingMessages(false);
-        setMessages([]);
-      }
-    };
-
     fetchConversation();
     fetchMessages();
-  }, [params.conversationId, t]);
+  }, [params.conversationId, t, fetchMessages]);
 
   useEffect(() => {
-    const onDisconnected = () => {
+    const onDisconnected = async () => {
       setVoiceRoomOpen(false);
+      if (sessionId) {
+        try {
+          await api.delete(`/voice/session/${sessionId}`);
+          setSessionId(null);
+        } catch (error) {
+          console.error("Failed to delete voice session", error);
+        }
+      }
+      fetchMessages();
     };
     room.on(RoomEvent.Disconnected, onDisconnected);
     return () => {
       room.off(RoomEvent.Disconnected, onDisconnected);
     };
-  }, [room]);
+  }, [room, fetchMessages, sessionId]);
 
   const handleJoinVoiceSession = async () => {
     setLoadingVoice(true);
@@ -116,7 +126,8 @@ export default function ConversationPage({ params }: { params: PageParams }) {
       const sessionResponse = await api.post("/voice/session/create", {
         conversation_id: currentConversationId
       });
-      const { token } = sessionResponse.data;
+      const { token, session_id } = sessionResponse.data;
+      setSessionId(session_id);
       const livekitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
 
       if (!livekitUrl) {
