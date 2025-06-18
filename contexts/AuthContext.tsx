@@ -59,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("refresh_token");
     setUser(null);
     router.push("/auth/login");
+    //TODO: call logout endpoint
   };
 
   const value = {
