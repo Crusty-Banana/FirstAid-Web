@@ -151,7 +151,7 @@ export default function Sidebar() {
           {!isCollapsed && (
             <div className="flex items-center gap-2">
               <Image src="/firstAidLogo.png" alt="Logo 1" width={40} height={40} />
-              <Image src="/Logo2.webp" alt="Logo 2" width={40} height={40} />
+              <Image src="/logo2.webp" alt="Logo 2" width={40} height={40} />
             </div>
           )}
           <button

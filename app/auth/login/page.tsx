@@ -45,7 +45,10 @@ export default function LoginPage() {
     <div className="flex items-center justify-center h-screen bg-white text-black">
       <div className="w-full max-w-md p-8 space-y-8 bg-gray-100 rounded-lg shadow-md">
         <div className="flex flex-col items-center">
-          <Image src="/firstAidLogo.png" alt="FirstAid Logo" width={140} height={140} />
+          <div className="flex">
+            <Image src="/firstAidLogo.png" alt="FirstAid Logo" width={140} height={140} />
+            <Image src="/logo2.webp" alt="Logo 2" width={180} height={60} className="p-3"/>
+          </div>
           <h1 className="text-2xl font-bold text-center mt-4">
             {t("login_to_medbot")}
           </h1>
