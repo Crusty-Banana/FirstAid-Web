@@ -1,5 +1,6 @@
 import type { AgentState } from "@livekit/components-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface NoAgentNotificationProps extends React.PropsWithChildren<object> {
   state: AgentState;
@@ -13,6 +14,7 @@ export function NoAgentNotification(props: NoAgentNotificationProps) {
   const timeoutRef = useRef<number | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const agentHasConnected = useRef(false);
+  const { t } = useTranslation();
 
   // If the agent has connected, we don't need to show the notification.
   if (
@@ -65,15 +67,14 @@ export function NoAgentNotification(props: NoAgentNotificationProps) {
             </svg>
           </div>
           <p className="text-pretty w-max">
-            It&apos;s quiet... too quiet. Is your agent lost? Ensure your agent is properly
-            configured and running on your machine.
+            {t("no_agent_notification")}
           </p>
           <a
             href="https://docs.livekit.io/agents/quickstarts/s2s/"
             target="_blank"
             className="underline whitespace-nowrap"
           >
-            View guide
+            {t("view_guide")}
           </a>
           <button onClick={() => setShowNotification(false)}>
             {/* Close Icon */}

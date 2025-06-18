@@ -9,6 +9,7 @@ import { CheckIcon } from "./CheckIcon";
 import { LoadingIcon } from "./LoadingIcon";
 import { NewChatIcon } from "./NewChatIcon";
 import { SettingsModal } from "./SettingsModal";
+import { useTranslation } from "@/hooks/useTranslation";
 
 function HideSidebarIcon() {
   return (
@@ -61,6 +62,7 @@ export default function Sidebar() {
   const [deletingConversationId, setDeletingConversationId] = useState<string | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchConversations();
@@ -124,14 +126,14 @@ export default function Sidebar() {
                 <NewChatIcon /> 
                 {!isCollapsed && 
                   (
-                    <span className="ml-2">New Chat</span>
+                    <span className="ml-2">{t("new_chat")}</span>
                   )
                 }
               </div>
             </a>
           </Link>
         <div className={`flex-1 overflow-y-auto custom-scrollbar w-full ${isCollapsed ? 'hidden' : ''}`}>
-          <h2 className="text-lg font-semibold mb-4">History</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("history")}</h2>
           <nav className="space-y-2">
             {conversations.map((convo) => (
               <div key={convo.id} className="flex items-center group">

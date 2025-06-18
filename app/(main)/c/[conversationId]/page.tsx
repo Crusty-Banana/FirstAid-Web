@@ -8,6 +8,7 @@ import { LoadingModal } from "@/components/LoadingModal";
 import { useRouter } from "next/navigation";
 import { CheckIcon } from "@/components/CheckIcon";
 import { EditIcon } from "@/components/EditIcon";
+import { useTranslation } from "@/hooks/useTranslation";
 
 // Define a simple Audio Icon component
 function AudioIcon() {
@@ -51,6 +52,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
   const [isVoiceRoomOpen, setVoiceRoomOpen] = useState(false);
   const [loadingVoice, setLoadingVoice] = useState(false);
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchConversation = async () => {
@@ -61,6 +63,8 @@ export default function ConversationPage({ params }: { params: PageParams }) {
         } catch (error) {
           console.error("Failed to fetch conversation details", error);
         }
+      } else {
+        setConversationTitle(t("new_conversation_title"));
       }
     };
 
@@ -85,7 +89,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
 
     fetchConversation();
     fetchMessages();
-  }, [params.conversationId]);
+  }, [params.conversationId, t]);
 
   useEffect(() => {
     const onDisconnected = () => {
@@ -124,7 +128,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
       setVoiceRoomOpen(true);
     } catch (error) {
       console.error("Failed to join voice session", error);
-      alert("Could not join voice session. Please try again.");
+      alert(t("could_not_join_voice_session"));
     } finally {
       setLoadingVoice(false);
     }
@@ -182,7 +186,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
         <div className="flex-1 p-4 flex flex-col">
           {loadingMessages ? (
             <div className="flex-1 flex items-center justify-center">
-              Loading messages...
+              {t("loading_messages")}
             </div>
           ) : (
             <>
@@ -207,7 +211,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
                   ))
                 ) : (
                   <div className="text-center text-gray-400">
-                    No messages yet. Start the conversation!
+                    {t("no_messages_yet")}
                   </div>
                 )}
               </div>
@@ -229,7 +233,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
       </div>
 
       {/* Conditionally render the modals as overlays */}
-      {loadingVoice && <LoadingModal text="Joining voice session..." />}
+      {loadingVoice && <LoadingModal text={t("joining_voice_session")} />}
       {isVoiceRoomOpen && <VoiceRoomModal room={room} />}
     </>
   );

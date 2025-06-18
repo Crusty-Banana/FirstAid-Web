@@ -9,6 +9,10 @@ interface User {
   email: string;
   first_name: string;
   last_name: string;
+  preferences?: {
+    isVietnamese?: boolean;
+    useRAG?: boolean;
+  }
 }
 
 interface AuthContextType {
@@ -18,6 +22,8 @@ interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   fetchProfile: () => Promise<void>;
+  isVietnamese: boolean;
+  setIsVietnamese: (isVietnamese: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,12 +31,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isVietnamese, setIsVietnamese] = useState(false);
   const router = useRouter();
 
   const fetchProfile = async () => {
     try {
       const { data } = await api.get("/profile/");
       setUser(data);
+      if (data.preferences?.isVietnamese) {
+        setIsVietnamese(true);
+      } else {
+        setIsVietnamese(false);
+      }
     } catch (error) {
       console.error("Failed to fetch profile, logging out.", error);
       logout();
@@ -67,6 +79,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         router.push("/auth/login");
     }
   };
+  
+  const handleLanguageChange = (isVietnamese: boolean) => {
+      setIsVietnamese(isVietnamese);
+  };
 
   const value = {
     user,
@@ -75,6 +91,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logout,
     isLoading,
     fetchProfile,
+    isVietnamese,
+    setIsVietnamese: handleLanguageChange,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

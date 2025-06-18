@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
 import Link from "next/link";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { login } = useAuth();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,7 @@ export default function LoginPage() {
       login(access_token, refresh_token);
       console.log(`[auth/login]: login-ed. access_token: ${access_token}`)
     } catch (err) {
-      setError("Failed to login. Please check your credentials.");
+      setError(t("failed_to_login"));
       console.error(err);
     }
   };
@@ -28,14 +30,14 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
       <div className="w-full max-w-md p-8 space-y-8 bg-gray-800 rounded-lg">
-        <h1 className="text-2xl font-bold text-center">Login to MedBot</h1>
+        <h1 className="text-2xl font-bold text-center">{t("login_to_medbot")}</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="email"
               className="text-sm font-medium text-gray-400"
             >
-              Email
+              {t("email")}
             </label>
             <input
               id="email"
@@ -51,7 +53,7 @@ export default function LoginPage() {
               htmlFor="password"
               className="text-sm font-medium text-gray-400"
             >
-              Password
+              {t("password")}
             </label>
             <input
               id="password"
@@ -67,13 +69,13 @@ export default function LoginPage() {
             type="submit"
             className="w-full py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700"
           >
-            Login
+            {t("login")}
           </button>
         </form>
         <p className="text-sm text-center text-gray-400">
-          Don&apos;t have an account?{" "}
+          {t("dont_have_account")}{" "}
           <Link href="/auth/register" className="font-medium text-blue-400 hover:underline">
-            Register
+            {t("register")}
           </Link>
         </p>
       </div>
