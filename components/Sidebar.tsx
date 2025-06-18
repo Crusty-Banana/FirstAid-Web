@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image"; // Add this import
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
 import { EditIcon } from "./EditIcon";
@@ -143,10 +144,16 @@ export default function Sidebar() {
         }`}
       >
         <div
-          className={`w-full flex ${
-            isCollapsed ? "justify-center" : "justify-end"
+          className={`w-full flex items-center ${
+            isCollapsed ? "justify-center" : "justify-between"
           } mb-2`}
         >
+          {!isCollapsed && (
+            <div className="flex items-center gap-2">
+              <Image src="/firstAidLogo.png" alt="Logo 1" width={40} height={40} />
+              <Image src="/Logo2.webp" alt="Logo 2" width={40} height={40} />
+            </div>
+          )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-1 hover:bg-gray-200 rounded h-[40px] w-[40px] flex items-center justify-center"

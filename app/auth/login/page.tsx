@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -43,7 +44,12 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center h-screen bg-white text-black">
       <div className="w-full max-w-md p-8 space-y-8 bg-gray-100 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center">{t("login_to_medbot")}</h1>
+        <div className="flex flex-col items-center">
+          <Image src="/firstAidLogo.png" alt="FirstAid Logo" width={140} height={140} />
+          <h1 className="text-2xl font-bold text-center mt-4">
+            {t("login_to_medbot")}
+          </h1>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
@@ -89,7 +95,10 @@ export default function LoginPage() {
         </form>
         <p className="text-sm text-center text-gray-600">
           {t("dont_have_account")}{" "}
-          <Link href="/auth/register" className="font-medium text-primary hover:underline">
+          <Link
+            href="/auth/register"
+            className="font-medium text-primary hover:underline"
+          >
             {t("register")}
           </Link>
         </p>
