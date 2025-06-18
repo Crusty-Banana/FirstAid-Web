@@ -72,10 +72,10 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-gray-800 rounded-lg p-8 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-lg p-8 w-full max-w-md text-black" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">{t("settings")}</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-700 rounded">
+          <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded">
             <CloseIcon />
           </button>
         </div>
@@ -90,17 +90,17 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 placeholder={t("first_name")}
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-black bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <input
                 placeholder={t("last_name")}
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-black bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-300">{t("language")}</span>
+              <span className="text-gray-700">{t("language")}</span>
               <div className="flex items-center space-x-2">
                 <span>EN</span>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -110,13 +110,13 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     onChange={() => setIsVietnamese(!isVietnamese)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
                 <span>VI</span>
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-300">{t("use_rag")}</span>
+              <span className="text-gray-700">{t("use_rag")}</span>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -124,19 +124,19 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   onChange={() => setUseRAG(!useRAG)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
               </label>
             </div>
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="w-full py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-500"
+              className="w-full py-2 font-semibold text-white bg-primary rounded-md hover:bg-primary/90 disabled:bg-gray-400"
             >
               {isSaving ? t("saving") : t("save")}
             </button>
             <button
               onClick={logout}
-              className="w-full text-center p-2 rounded-md bg-red-800 hover:bg-red-900 text-white"
+              className="w-full text-center p-2 rounded-md bg-danger hover:bg-danger/90 text-white"
             >
               {t("logout")}
             </button>

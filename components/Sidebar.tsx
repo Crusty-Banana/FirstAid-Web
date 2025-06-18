@@ -113,15 +113,15 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className={`bg-gray-800 p-4 flex flex-col transition-all duration-300 ${isCollapsed ? 'w-20 items-center' : 'w-64'}`}>
+      <aside className={`bg-gray-100 text-black p-4 flex flex-col transition-all duration-300 ${isCollapsed ? 'w-20 items-center' : 'w-64'}`}>
         <div className={`w-full flex ${isCollapsed ? 'justify-center' : 'justify-end'} mb-2`}>
-          <button onClick={() => setIsCollapsed(!isCollapsed)} className="p-1 hover:bg-gray-600 rounded h-[40px] w-[40px] flex items-center justify-center">
+          <button onClick={() => setIsCollapsed(!isCollapsed)} className="p-1 hover:bg-gray-200 rounded h-[40px] w-[40px] flex items-center justify-center">
               {isCollapsed ? <ShowSidebarIcon /> : <HideSidebarIcon />}
           </button>
         </div>
         
           <Link href="/c/new" legacyBehavior>
-            <a className={`h-[40px] mb-4 p-2 rounded-md bg-transparent hover:bg-gray-700 flex items-center ${isCollapsed ? 'w-[40px] justify-center' : 'w-full'}`}>  
+            <a className={`h-[40px] mb-4 p-2 rounded-md bg-transparent hover:bg-gray-200 flex items-center ${isCollapsed ? 'w-[40px] justify-center' : 'w-full'}`}>  
               <div className="flex items-center">
                 <NewChatIcon /> 
                 {!isCollapsed && 
@@ -148,25 +148,25 @@ export default function Sidebar() {
                         if (e.key === "Enter") handleTitleSave(convo.id);
                         if (e.key === "Escape") setEditingConversationId(null);
                       }}
-                      className="bg-gray-700 text-white p-2 rounded-md w-full"
+                      className="bg-gray-200 text-black p-2 rounded-md w-full"
                       autoFocus
                     />
-                    <button onClick={() => handleTitleSave(convo.id)} className="p-1 hover:bg-gray-600 rounded ml-2">
+                    <button onClick={() => handleTitleSave(convo.id)} className="p-1 hover:bg-gray-300 rounded ml-2">
                       <CheckIcon />
                     </button>
                   </>
                 ) : (
                   <>
                   <Link href={`/c/${convo.id}`} legacyBehavior>
-                      <a className="block p-2 rounded-md hover:bg-gray-700 truncate flex-1">
+                      <a className="block p-2 rounded-md hover:bg-gray-200 truncate flex-1">
                           {convo.title}
                       </a>
                   </Link>
                    <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => handleEditClick(convo)} className="p-1 hover:bg-gray-600 rounded">
+                      <button onClick={() => handleEditClick(convo)} className="p-1 hover:bg-gray-300 rounded">
                         <EditIcon />
                       </button>
-                      <button onClick={() => handleDelete(convo.id)} className="p-1 hover:bg-gray-600 rounded" disabled={deletingConversationId === convo.id}>
+                      <button onClick={() => handleDelete(convo.id)} className="p-1 hover:bg-gray-300 rounded" disabled={deletingConversationId === convo.id}>
                         {deletingConversationId === convo.id ? <LoadingIcon /> : <TrashCanIcon />}
                       </button>
                     </div>
@@ -179,7 +179,7 @@ export default function Sidebar() {
         <div className={`mt-auto w-full ${isCollapsed ? 'hidden' : ''}`}>
           {user && (
             <div 
-              className="text-sm p-2 truncate cursor-pointer hover:bg-gray-700 rounded-md"
+              className="text-sm p-2 truncate cursor-pointer hover:bg-gray-200 rounded-md"
               onClick={() => setSettingsModalOpen(true)}
             >
               {user.first_name} {user.last_name}

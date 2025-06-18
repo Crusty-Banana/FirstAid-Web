@@ -186,7 +186,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
     <>
       <div className="relative flex-1 flex flex-col overflow-y-auto">
         {/* Top Bar */}
-        <div className="flex items-center justify-center p-4 bg-gray-800 border-b border-gray-700">
+        <div className="flex items-center justify-center p-4 bg-gray-100 border-b border-gray-200">
           {isEditingTitle ? (
             <div className="flex items-center">
               <input
@@ -197,10 +197,10 @@ export default function ConversationPage({ params }: { params: PageParams }) {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleTitleSave();
                 }}
-                className="bg-gray-700 text-white text-lg font-semibold px-2 py-1 rounded"
+                className="bg-gray-200 text-black text-lg font-semibold px-2 py-1 rounded"
                 autoFocus
               />
-              <button onClick={handleTitleSave} className="ml-2 p-1 hover:bg-gray-600 rounded">
+              <button onClick={handleTitleSave} className="ml-2 p-1 hover:bg-gray-300 rounded">
                 <CheckIcon />
               </button>
             </div>
@@ -232,8 +232,8 @@ export default function ConversationPage({ params }: { params: PageParams }) {
                       }`}
                     >
                       <div
-                        className={`p-4 rounded-lg max-w-[80%] ${
-                          msg.role === "user" ? "bg-blue-600" : "bg-gray-700"
+                        className={`p-4 rounded-lg max-w-[80%] text-white ${
+                          msg.role === "user" ? "bg-primary" : "bg-gray-500"
                         }`}
                       >
                         <p>{msg.content}</p>
@@ -241,7 +241,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center text-gray-400">
+                  <div className="text-center text-gray-500">
                     {t("no_messages_yet")}
                   </div>
                 )}
@@ -256,7 +256,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
           <button
             onClick={handleJoinVoiceSession}
             disabled={loadingVoice}
-            className="p-4 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:bg-gray-500 transition-colors"
+            className="p-4 bg-primary text-white rounded-full shadow-lg hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:bg-gray-400 transition-colors"
           >
             {params.conversationId === 'new' ? <PlusIcon /> : <AudioIcon />}
           </button>

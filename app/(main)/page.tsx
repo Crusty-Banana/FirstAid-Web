@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <main
       data-lk-theme="default"
-      className="h-full grid content-center bg-gray-900"
+      className="h-full grid content-center bg-white"
     >
         <p>{t("loading")}</p>
     </main>

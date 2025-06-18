@@ -1,7 +1,7 @@
 export const translations = {
     en: {
         "loading": "Loading...",
-        "login_to_medbot": "Login to MedBot",
+        "login_to_medbot": "Login to FirstAid",
         "email": "Email",
         "password": "Password",
         "login": "Login",
@@ -33,7 +33,7 @@ export const translations = {
     },
     vi: {
         "loading": "Đang tải...",
-        "login_to_medbot": "Đăng nhập vào MedBot",
+        "login_to_medbot": "Đăng nhập vào FirstAid",
         "email": "Email",
         "password": "Mật khẩu",
         "login": "Đăng nhập",
