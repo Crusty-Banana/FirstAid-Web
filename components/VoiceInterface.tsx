@@ -22,11 +22,13 @@ export function VoiceInterface() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3, ease: [0.09, 1.04, 0.245, 1.055] }}
-      className="flex flex-col items-center gap-4 h-full"
+      className="flex flex-col items-center justify-evenly h-full"
     >
-      <AgentVisualizer />
-      <div className="flex-1 w-full">
-        <TranscriptionView />
+      <div>
+        <AgentVisualizer />
+        <div className="w-full">
+          <TranscriptionView />
+        </div>
       </div>
       <div className="w-full">
         <ControlBar />

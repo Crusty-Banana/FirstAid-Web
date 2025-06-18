@@ -27,10 +27,10 @@ export function VoiceRoomModal({ room }: VoiceRoomModalProps) {
   return createPortal(
     <main
       data-lk-theme="default"
-      className="fixed inset-0 z-50 grid content-center bg-gray-900"
+      className="fixed inset-0 z-50 bg-gray-900"
     >
       <RoomContext.Provider value={room}>
-        <div className="lk-room-container max-w-[1024px] w-[90vw] mx-auto max-h-[90vh]">
+        <div className="lk-room-container h-full w-full">
           <VoiceInterface />
         </div>
       </RoomContext.Provider>
