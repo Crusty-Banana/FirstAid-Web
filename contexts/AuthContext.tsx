@@ -18,7 +18,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (accessToken: string, refreshToken:string) => void;
+  login: (accessToken: string, refreshToken:string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   fetchProfile: () => Promise<void>;
@@ -60,10 +60,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const login = (accessToken: string, refreshToken: string) => {
+  const login = async (accessToken: string, refreshToken: string) => {
     localStorage.setItem("access_token", accessToken);
     localStorage.setItem("refresh_token", refreshToken);
-    fetchProfile();
+    await fetchProfile();
     router.push("/");
   };
 
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         router.push("/auth/login");
     }
   };
-  
+
   const handleLanguageChange = (isVietnamese: boolean) => {
       setIsVietnamese(isVietnamese);
   };

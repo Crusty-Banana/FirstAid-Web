@@ -19,7 +19,7 @@ export default function LoginPage() {
     try {
       const response = await api.post("/auth/login", { email, password });
       const { access_token, refresh_token } = response.data;
-      login(access_token, refresh_token);
+      await login(access_token, refresh_token);
       console.log(`[auth/login]: login-ed. access_token: ${access_token}`);
     } catch (err) {
       setError(t("failed_to_login"));
