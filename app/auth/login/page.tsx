@@ -13,17 +13,30 @@ export default function LoginPage() {
   const { login } = useAuth();
   const { t } = useTranslation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // 1. Core logic is moved to its own function
+  const handleLogin = async () => {
     setError("");
     try {
       const response = await api.post("/auth/login", { email, password });
       const { access_token, refresh_token } = response.data;
       login(access_token, refresh_token);
-      console.log(`[auth/login]: login-ed. access_token: ${access_token}`)
+      console.log(`[auth/login]: login-ed. access_token: ${access_token}`);
     } catch (err) {
       setError(t("failed_to_login"));
       console.error(err);
+    }
+  };
+
+  // 2. The form's submit handler calls the new login function
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleLogin();
+  };
+
+  // 3. The keydown handler also calls the new login function
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleLogin();
     }
   };
 
@@ -44,6 +57,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleKeyDown} // 4. onKeyDown is added here
               required
               className="w-full px-3 py-2 mt-1 text-white bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -60,6 +74,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown} // and here
               required
               className="w-full px-3 py-2 mt-1 text-white bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
