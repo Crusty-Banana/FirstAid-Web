@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { Room, RoomEvent } from "livekit-client";
-import { LiveKitRoom, RoomContext } from "@livekit/components-react";
-import { VoiceInterface } from "@/components/VoiceInterface";
+import { VoiceRoomModal } from "@/components/VoiceRoomModal";
+import { LoadingModal } from "@/components/LoadingModal";
 
 // Define a simple Audio Icon component
 function AudioIcon() {
@@ -40,7 +40,7 @@ interface PageParams {
 export default function ConversationPage({ params }: { params: PageParams }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(true);
-  
+
   // State for the voice room
   const [room] = useState(new Room());
   const [isVoiceRoomOpen, setVoiceRoomOpen] = useState(false);
@@ -73,19 +73,22 @@ export default function ConversationPage({ params }: { params: PageParams }) {
     };
   }, [room]);
 
-
   const handleJoinVoiceSession = async () => {
     setLoadingVoice(true);
     try {
       const sessionResponse = await api.post("/voice/session/create", {
         conversation_id: params.conversationId,
+        metadata: { instructions: "You are a helpful medical assistant." },
       });
       const { token } = sessionResponse.data;
-
       const livekitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
-      await room.connect(livekitUrl!, token);
+
+      if (!livekitUrl) {
+          throw new Error("NEXT_PUBLIC_LIVEKIT_URL is not defined in .env.local");
+      }
+      
+      await room.connect(livekitUrl, token);
       await room.localParticipant.setMicrophoneEnabled(true);
-      console.log(`[conversation]: connected to room`)
       setVoiceRoomOpen(true);
     } catch (error) {
       console.error("Failed to join voice session", error);
@@ -95,70 +98,58 @@ export default function ConversationPage({ params }: { params: PageParams }) {
     }
   };
 
-  // Render loading screen for the voice room
-  if (loadingVoice) {
-    return (
-      <div className="w-screen h-screen flex items-center justify-center bg-gray-900 text-white">
-        Joining voice session...
-      </div>
-    );
-  }
-
-  // Render the full-screen voice room
-  if (isVoiceRoomOpen) {
-    return (
-      <main
-        data-lk-theme="default"
-        className="w-screen h-screen grid content-center bg-gray-900"
-      >
-        <RoomContext.Provider value={room}>
-          <div className="lk-room-container max-w-[1024px] w-[90vw] mx-auto max-h-[90vh]">
-            <VoiceInterface />
-          </div>
-        </RoomContext.Provider>
-      </main>
-    );
-  }
-
-  // Render the chat history view
   return (
-    <div className="relative flex-1 flex flex-col p-4 overflow-y-auto">
-      {loadingMessages ? (
-        <div className="flex-1 flex items-center justify-center">
-          Loading messages...
-        </div>
-      ) : (
-        <>
-          <div className="flex-1" />
-          <div className="w-full max-w-4xl mx-auto space-y-4 mb-20">
-            {(messages.length != 0)? (messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                  <div className={`p-4 rounded-lg max-w-[80%] ${
-                      msg.role === "user" ? "bg-blue-600" : "bg-gray-700"
-                  }`}>
-                    <p>{msg.content}</p>
-                </div>
-              </div>
-            ))) :
-            (<p>No messages yet</p>)
-            }
+    <>
+      <div className="relative flex-1 flex flex-col p-4 overflow-y-auto">
+        {loadingMessages ? (
+          <div className="flex-1 flex items-center justify-center">
+            Loading messages...
           </div>
-        </>
-      )}
+        ) : (
+          <>
+            <div className="flex-1" />
+            <div className="w-full max-w-4xl mx-auto space-y-4 mb-20">
+              {messages.length > 0 ? (
+                messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${
+                      msg.role === "user" ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`p-4 rounded-lg max-w-[80%] ${
+                        msg.role === "user" ? "bg-blue-600" : "bg-gray-700"
+                      }`}
+                    >
+                      <p>{msg.content}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-400">
+                  No messages yet. Start the conversation!
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
-      {/* Audio Button */}
-      <div className="absolute bottom-6 right-6">
-        <button
-          onClick={handleJoinVoiceSession}
-          disabled={loadingVoice}
-          className="p-4 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-500"
-        >
-          <AudioIcon />
-        </button>
+        {/* Audio Button */}
+        <div className="absolute bottom-6 right-6">
+          <button
+            onClick={handleJoinVoiceSession}
+            disabled={loadingVoice}
+            className="p-4 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-500 transition-colors"
+          >
+            <AudioIcon />
+          </button>
+        </div>
       </div>
-    </div>
+
+      {/* Conditionally render the modals as overlays */}
+      {loadingVoice && <LoadingModal text="Joining voice session..." />}
+      {isVoiceRoomOpen && <VoiceRoomModal room={room} />}
+    </>
   );
 }
