@@ -49,6 +49,23 @@ export default function RegisterPage() {
             {t("register")}
           </button>
         </form>
+        <p className="text-xs text-center text-gray-500">
+          By continuing, you agree to our{" "}
+          <Link
+            href="https://sites.google.com/view/first-aid-pp/home"
+            className="text-blue-500"
+          >
+            Privacy Policy
+          </Link>{" "}
+          and{" "}
+          <Link
+            href="https://sites.google.com/view/first-aid-terms-of-service/home"
+            className="text-blue-500"
+          >
+            Terms of Service
+          </Link>
+          .
+        </p>
          <p className="text-sm text-center text-gray-600">
           {t("already_have_account")}{" "}
           <Link href="/auth/login" className="font-medium text-primary hover:underline">
