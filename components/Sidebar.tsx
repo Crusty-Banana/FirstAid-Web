@@ -28,6 +28,11 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 bg-gray-800 p-4 flex flex-col">
+      <Link href="/c/new" legacyBehavior>
+        <a className="mb-4 w-full text-center p-2 rounded-md bg-blue-600 hover:bg-blue-700">
+          New Chat
+        </a>
+      </Link>
       {/* Make this container scrollable */}
       <div className="flex-1 overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">History</h2>

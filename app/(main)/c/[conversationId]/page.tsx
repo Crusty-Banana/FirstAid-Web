@@ -5,6 +5,7 @@ import api from "@/lib/api";
 import { Room, RoomEvent } from "livekit-client";
 import { VoiceRoomModal } from "@/components/VoiceRoomModal";
 import { LoadingModal } from "@/components/LoadingModal";
+import { useRouter } from "next/navigation";
 
 // Define a simple Audio Icon component
 function AudioIcon() {
@@ -27,6 +28,24 @@ function AudioIcon() {
   );
 }
 
+function EditIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+    </svg>
+  );
+}
+
 interface Message {
   id: string;
   role: "user" | "assistant";
@@ -40,26 +59,47 @@ interface PageParams {
 export default function ConversationPage({ params }: { params: PageParams }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(true);
+  const [conversationTitle, setConversationTitle] = useState("New Chat");
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   // State for the voice room
   const [room] = useState(new Room());
   const [isVoiceRoomOpen, setVoiceRoomOpen] = useState(false);
   const [loadingVoice, setLoadingVoice] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      setLoadingMessages(true);
-      try {
-        const response = await api.get(
-          `/conversations/${params.conversationId}/messages`
-        );
-        setMessages(response.data);
-      } catch (error) {
-        console.error("Failed to fetch messages", error);
-      } finally {
-        setLoadingMessages(false);
+    const fetchConversation = async () => {
+      if (params.conversationId && params.conversationId !== 'new') {
+        try {
+          const response = await api.get(`/conversations/${params.conversationId}`);
+          setConversationTitle(response.data.title);
+        } catch (error) {
+          console.error("Failed to fetch conversation details", error);
+        }
       }
     };
+
+    const fetchMessages = async () => {
+      if (params.conversationId && params.conversationId !== 'new') {
+        setLoadingMessages(true);
+        try {
+          const response = await api.get(
+            `/conversations/${params.conversationId}/messages`
+          );
+          setMessages(response.data);
+        } catch (error) {
+          console.error("Failed to fetch messages", error);
+        } finally {
+          setLoadingMessages(false);
+        }
+      } else {
+        setLoadingMessages(false);
+        setMessages([]);
+      }
+    };
+
+    fetchConversation();
     fetchMessages();
   }, [params.conversationId]);
 
@@ -76,8 +116,17 @@ export default function ConversationPage({ params }: { params: PageParams }) {
   const handleJoinVoiceSession = async () => {
     setLoadingVoice(true);
     try {
+      let currentConversationId = params.conversationId;
+      if (params.conversationId === 'new') {
+        const convResponse = await api.post("/conversations/", {
+          title: conversationTitle,
+        });
+        currentConversationId = convResponse.data.id;
+        router.push(`/c/${currentConversationId}`);
+      }
+
       const sessionResponse = await api.post("/voice/session/create", {
-        conversation_id: params.conversationId,
+        conversation_id: currentConversationId,
         metadata: { instructions: "You are a helpful medical assistant." },
       });
       const { token } = sessionResponse.data;
@@ -98,42 +147,84 @@ export default function ConversationPage({ params }: { params: PageParams }) {
     }
   };
 
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setConversationTitle(e.target.value);
+  };
+
+  const handleTitleSave = async () => {
+    if (params.conversationId && params.conversationId !== 'new') {
+      try {
+        await api.patch(`/conversations/${params.conversationId}`, { title: conversationTitle });
+        setIsEditingTitle(false);
+      } catch (error) {
+        console.error("Failed to update conversation title", error);
+      }
+    } else {
+        setIsEditingTitle(false);
+    }
+  };
+
   return (
     <>
-      <div className="relative flex-1 flex flex-col p-4 overflow-y-auto">
-        {loadingMessages ? (
-          <div className="flex-1 flex items-center justify-center">
-            Loading messages...
-          </div>
-        ) : (
-          <>
-            <div className="flex-1" />
-            <div className="w-full max-w-4xl mx-auto space-y-4 mb-20">
-              {messages.length > 0 ? (
-                messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${
-                      msg.role === "user" ? "justify-end" : "justify-start"
-                    }`}
-                  >
+      <div className="relative flex-1 flex flex-col overflow-y-auto">
+        {/* Top Bar */}
+        <div className="flex items-center justify-center p-4 bg-gray-800 border-b border-gray-700">
+          {isEditingTitle ? (
+            <input
+              type="text"
+              value={conversationTitle}
+              onChange={handleTitleChange}
+              onBlur={handleTitleSave}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleTitleSave();
+              }}
+              className="bg-gray-700 text-white text-lg font-semibold px-2 py-1 rounded"
+              autoFocus
+            />
+          ) : (
+            <h1 className="text-lg font-semibold">{conversationTitle}</h1>
+          )}
+          <button onClick={() => setIsEditingTitle(!isEditingTitle)} className="ml-2">
+            <EditIcon />
+          </button>
+        </div>
+
+        <div className="flex-1 p-4 flex flex-col">
+          {loadingMessages ? (
+            <div className="flex-1 flex items-center justify-center">
+              Loading messages...
+            </div>
+          ) : (
+            <>
+              <div className="flex-1" />
+              <div className="w-full max-w-4xl mx-auto space-y-4 mb-20">
+                {messages.length > 0 ? (
+                  messages.map((msg) => (
                     <div
-                      className={`p-4 rounded-lg max-w-[80%] ${
-                        msg.role === "user" ? "bg-blue-600" : "bg-gray-700"
+                      key={msg.id}
+                      className={`flex ${
+                        msg.role === "user" ? "justify-end" : "justify-start"
                       }`}
                     >
-                      <p>{msg.content}</p>
+                      <div
+                        className={`p-4 rounded-lg max-w-[80%] ${
+                          msg.role === "user" ? "bg-blue-600" : "bg-gray-700"
+                        }`}
+                      >
+                        <p>{msg.content}</p>
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-400">
+                    No messages yet. Start the conversation!
                   </div>
-                ))
-              ) : (
-                <div className="text-center text-gray-400">
-                  No messages yet. Start the conversation!
-                </div>
-              )}
-            </div>
-          </>
-        )}
+                )}
+              </div>
+            </>
+          )}
+        </div>
+
 
         {/* Audio Button */}
         <div className="absolute bottom-6 right-6">
