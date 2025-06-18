@@ -7,7 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
 
