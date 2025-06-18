@@ -12,7 +12,7 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
-  const { user, logout } = useAuth();
+  const { user, logout, fetchProfile } = useAuth();
   const [firstName, setFirstName] = useState(user?.first_name || "");
   const [lastName, setLastName] = useState(user?.last_name || "");
   const [isVietnamese, setIsVietnamese] = useState(false);
@@ -51,8 +51,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             isVietnamese
         }
       });
-      // await api.post("/profile/preferences", { isVietnamese });
-      // You might want to refresh the user context here if the name change should be reflected immediately without a page reload.
+      await fetchProfile();
       onClose();
     } catch (error) {
       console.error("Failed to save settings", error);
@@ -105,7 +104,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     onChange={() => setIsVietnamese(!isVietnamese)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
                 </label>
                 <span>VI</span>
               </div>
@@ -119,7 +118,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             </button>
             <button
               onClick={logout}
-              className="w-full text-left p-2 rounded-md hover:bg-red-700 bg-red-600 text-white text-center"
+              className="w-full text-center p-2 rounded-md bg-red-800 hover:bg-red-900 text-white"
             >
               Logout
             </button>

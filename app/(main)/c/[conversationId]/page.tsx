@@ -221,7 +221,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
           <button
             onClick={handleJoinVoiceSession}
             disabled={loadingVoice}
-            className="p-4 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-500 transition-colors"
+            className="p-4 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:bg-gray-500 transition-colors"
           >
             <AudioIcon />
           </button>
