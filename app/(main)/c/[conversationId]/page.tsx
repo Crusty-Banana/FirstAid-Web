@@ -110,8 +110,7 @@ export default function ConversationPage({ params }: { params: PageParams }) {
       }
 
       const sessionResponse = await api.post("/voice/session/create", {
-        conversation_id: currentConversationId,
-        metadata: { instructions: "You are a helpful medical assistant." },
+        conversation_id: currentConversationId
       });
       const { token } = sessionResponse.data;
       const livekitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;

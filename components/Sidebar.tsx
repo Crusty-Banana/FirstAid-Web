@@ -9,6 +9,43 @@ import { CheckIcon } from "./CheckIcon";
 import { LoadingIcon } from "./LoadingIcon";
 import { NewChatIcon } from "./NewChatIcon";
 
+function HideSidebarIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <line x1="9" y1="3" x2="9" y2="21" />
+    </svg>
+  );
+}
+
+function ShowSidebarIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <line x1="15" y1="3" x2="15" y2="21" />
+    </svg>
+  );
+}
 
 interface Conversation {
   id: string;
@@ -21,6 +58,7 @@ export default function Sidebar() {
   const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [deletingConversationId, setDeletingConversationId] = useState<string | null>(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     fetchConversations();
@@ -70,14 +108,26 @@ export default function Sidebar() {
 
 
   return (
-    <aside className="w-64 bg-gray-800 p-4 flex flex-col">
-      <Link href="/c/new" legacyBehavior>
-        <a className="mb-4 w-full text-center p-2 rounded-md bg-transparent hover:bg-gray-700 flex items-center justify-center">
-          <NewChatIcon />
-          <span className="ml-2">New Chat</span>
-        </a>
-      </Link>
-      <div className="flex-1 overflow-y-auto">
+    <aside className={`bg-gray-800 p-4 flex flex-col transition-all duration-300 ${isCollapsed ? 'w-20 items-center' : 'w-64'}`}>
+      <div className={`w-full flex ${isCollapsed ? 'justify-center' : 'justify-end'} mb-2`}>
+        <button onClick={() => setIsCollapsed(!isCollapsed)} className="p-1 hover:bg-gray-600 rounded h-[40px] w-[40px] flex items-center justify-center">
+            {isCollapsed ? <ShowSidebarIcon /> : <HideSidebarIcon />}
+        </button>
+      </div>
+      
+        <Link href="/c/new" legacyBehavior>
+          <a className={`h-[40px] mb-4 p-2 rounded-md bg-transparent hover:bg-gray-700 flex items-center ${isCollapsed ? 'w-[40px] justify-center' : 'w-full'}`}>  
+            <div className="flex items-center">
+              <NewChatIcon /> 
+              {!isCollapsed && 
+                (
+                  <span className="ml-2">New Chat</span>
+                )
+              }
+            </div>
+          </a>
+        </Link>
+      <div className={`flex-1 overflow-y-auto custom-scrollbar w-full ${isCollapsed ? 'hidden' : ''}`}>
         <h2 className="text-lg font-semibold mb-4">History</h2>
         <nav className="space-y-2">
           {conversations.map((convo) => (
@@ -121,9 +171,9 @@ export default function Sidebar() {
           ))}
         </nav>
       </div>
-      <div className="mt-auto">
+      <div className={`mt-auto w-full ${isCollapsed ? 'hidden' : ''}`}>
         {user && (
-          <div className="text-sm p-2">
+          <div className="text-sm p-2 truncate">
             {user.first_name} {user.last_name}
           </div>
         )}
