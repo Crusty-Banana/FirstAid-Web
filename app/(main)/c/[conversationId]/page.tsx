@@ -232,8 +232,10 @@ export default function ConversationPage({ params }: { params: PageParams }) {
                       }`}
                     >
                       <div
-                        className={`p-4 rounded-lg max-w-[80%] text-white ${
-                          msg.role === "user" ? "bg-primary" : "bg-gray-500"
+                        className={`p-4 rounded-lg max-w-[80%] ${
+                          msg.role === "user"
+                            ? "bg-primary text-white"
+                            : "bg-gray-200 text-black"
                         }`}
                       >
                         <p>{msg.content}</p>
