@@ -6,6 +6,8 @@ import { Room, RoomEvent } from "livekit-client";
 import { VoiceRoomModal } from "@/components/VoiceRoomModal";
 import { LoadingModal } from "@/components/LoadingModal";
 import { useRouter } from "next/navigation";
+import { CheckIcon } from "@/components/CheckIcon";
+import { EditIcon } from "@/components/EditIcon";
 
 // Define a simple Audio Icon component
 function AudioIcon() {
@@ -24,24 +26,6 @@ function AudioIcon() {
       <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
       <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
       <line x1="12" x2="12" y1="19" y2="22" />
-    </svg>
-  );
-}
-
-function EditIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
     </svg>
   );
 }
@@ -170,23 +154,30 @@ export default function ConversationPage({ params }: { params: PageParams }) {
         {/* Top Bar */}
         <div className="flex items-center justify-center p-4 bg-gray-800 border-b border-gray-700">
           {isEditingTitle ? (
-            <input
-              type="text"
-              value={conversationTitle}
-              onChange={handleTitleChange}
-              onBlur={handleTitleSave}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleTitleSave();
-              }}
-              className="bg-gray-700 text-white text-lg font-semibold px-2 py-1 rounded"
-              autoFocus
-            />
+            <div className="flex items-center">
+              <input
+                type="text"
+                value={conversationTitle}
+                onChange={handleTitleChange}
+                onBlur={handleTitleSave}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleTitleSave();
+                }}
+                className="bg-gray-700 text-white text-lg font-semibold px-2 py-1 rounded"
+                autoFocus
+              />
+              <button onClick={handleTitleSave} className="ml-2 p-1 hover:bg-gray-600 rounded">
+                <CheckIcon />
+              </button>
+            </div>
           ) : (
-            <h1 className="text-lg font-semibold">{conversationTitle}</h1>
+            <>
+              <h1 className="text-lg font-semibold">{conversationTitle}</h1>
+              <button onClick={() => setIsEditingTitle(true)} className="ml-2">
+                <EditIcon />
+              </button>
+            </>
           )}
-          <button onClick={() => setIsEditingTitle(!isEditingTitle)} className="ml-2">
-            <EditIcon />
-          </button>
         </div>
 
         <div className="flex-1 p-4 flex flex-col">
