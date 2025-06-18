@@ -31,6 +31,26 @@ function AudioIcon() {
   );
 }
 
+// Define a simple Plus Icon component
+function PlusIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+  );
+}
+
 interface Message {
   id: string;
   role: "user" | "assistant";
@@ -238,13 +258,13 @@ export default function ConversationPage({ params }: { params: PageParams }) {
             disabled={loadingVoice}
             className="p-4 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:bg-gray-500 transition-colors"
           >
-            <AudioIcon />
+            {params.conversationId === 'new' ? <PlusIcon /> : <AudioIcon />}
           </button>
         </div>
       </div>
 
       {/* Conditionally render the modals as overlays */}
-      {loadingVoice && <LoadingModal text={t("joining_voice_session")} />}
+      {loadingVoice && <LoadingModal text={params.conversationId === 'new' ? t("creating_new_conversation") : t("joining_voice_session")} />}
       {isVoiceRoomOpen && <VoiceRoomModal room={room} />}
     </>
   );

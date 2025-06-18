@@ -29,6 +29,7 @@ export const translations = {
         "joining_voice_session": "Joining voice session...",
         "could_not_join_voice_session": "Could not join voice session. Please try again.",
         "your_voice_health_assistant": "FirstAid - Your Voice Health Assistant",
+        "creating_new_conversation": "Creating new conversation...",
     },
     vi: {
         "loading": "Đang tải...",
@@ -60,5 +61,6 @@ export const translations = {
         "joining_voice_session": "Đang tham gia phiên thoại...",
         "could_not_join_voice_session": "Không thể tham gia phiên thoại. Vui lòng thử lại.",
         "your_voice_health_assistant": "FirstAid - Trợ lý sức khỏe bằng giọng nói của bạn",
+        "creating_new_conversation": "Đang tạo cuộc trò chuyện mới...",
     },
 };
